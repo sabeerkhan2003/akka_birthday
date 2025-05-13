@@ -76,42 +76,7 @@
       pointer-events: none;
     }
 
-    @media (max-width: 480px) {
-  .card {
-    max-width: 95%;
-    padding: 25px 20px;
-    height: auto;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  }
-
-  .card img {
-    width: 150px;
-    height: 150px;
-    margin-bottom: 20px;
-    border: 6px solid #ff4d6d;
-  }
-
-  .card h1 {
-    font-size: 2em;
-    margin-bottom: 15px;
-  }
-
-  .card p {
-    font-size: 1.1em;
-    margin: 15px 0;
-    line-height: 1.5em;
-  }
-
-  .card button {
-    font-size: 1.1em;
-    padding: 12px 20px;
-    width: 100%;
-    max-width: 260px;
-    margin-top: 15px;
-  }
-}
- 
+    
   </style>
 </head>
 <body>
@@ -121,7 +86,7 @@
     <img src="./sis.jpg" alt="Birthday Person">
     <h1>🎉 Happy Birthday! 🎉</h1>
     <p>Wishing you joy, laughter, and endless happiness on your special day!</p>
-    <button onclick="popSideBlasters()">Let's blast our life</button>
+    <button onclick="popSideBlasters()">Click for a Surprise</button>
   </div>
 
   <script>
@@ -138,7 +103,7 @@
         y,
         r: Math.random() * 6 + 2,
         d: Math.random() * 1 + 0.5,
-        color: hsl(${Math.random() * 360}, 100%, 70%),
+        color: `hsl(${Math.random() * 360}, 100%, 70%)`,
         tilt: Math.random() * 10 - 5,
         vx,
         vy
