@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Happy Birthday!</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
@@ -12,38 +16,40 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
     }
 
     .card {
       background: white;
       border-radius: 20px;
-      padding: 40px;
+      padding: 40px 30px;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
       position: relative;
       z-index: 10;
-      max-width: 450px;
+      max-width: 480px;
+      width: 90%;
     }
 
     .card img {
-      width: 200px;
-      height: 200px;
+      width: 180px;
+      height: 180px;
       object-fit: cover;
       border-radius: 50%;
-      border: 6px solid #ff4d6d;
-      margin-bottom: 25px;
+      border: 8px solid #ff4d6d;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     }
 
     .card h1 {
-      font-size: 3em;
+      font-size: 2.5em;
       color: #ff4d6d;
     }
 
     .card p {
-      font-size: 1.4em;
-      margin: 25px 0;
+      font-size: 1.2em;
+      margin: 20px 0;
       color: #444;
     }
 
@@ -69,71 +75,127 @@
       z-index: 1;
       pointer-events: none;
     }
+
+    @media (max-width: 480px) {
+  .card {
+    max-width: 95%;
+    padding: 25px 20px;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .card img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 20px;
+    border: 6px solid #ff4d6d;
+  }
+
+  .card h1 {
+    font-size: 2em;
+    margin-bottom: 15px;
+  }
+
+  .card p {
+    font-size: 1.1em;
+    margin: 15px 0;
+    line-height: 1.5em;
+  }
+
+  .card button {
+    font-size: 1.1em;
+    padding: 12px 20px;
+    width: 100%;
+    max-width: 260px;
+    margin-top: 15px;
+  }
+}
+ 
   </style>
 </head>
 <body>
   <canvas id="confetti"></canvas>
 
   <div class="card">
-    <!-- Larger image -->
     <img src="./sis.jpg" alt="Birthday Person">
-    
     <h1>🎉 Happy Birthday! 🎉</h1>
     <p>Wishing you joy, laughter, and endless happiness on your special day!</p>
-    <button onclick="showMessage()">Click for a Surprise</button>
+    <button onclick="popSideBlasters()">Let's blast our life</button>
   </div>
 
   <script>
-    function showMessage() {
-      alert("🎂 Here's to another year of amazing adventures! 🎈");
-    }
-
-    // Simple Confetti Animation
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const confetti = [];
+    let particles = [];
 
-    for (let i = 0; i < 150; i++) {
-      confetti.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height - canvas.height,
+    function createConfettiParticle(x, y, vx, vy) {
+      return {
+        x,
+        y,
         r: Math.random() * 6 + 2,
-        d: Math.random() * 0.5 + 0.3,
-        color: `hsl(${Math.random() * 360}, 100%, 70%)`,
-        tilt: Math.random() * 10 - 5
-      });
+        d: Math.random() * 1 + 0.5,
+        color: hsl(${Math.random() * 360}, 100%, 70%),
+        tilt: Math.random() * 10 - 5,
+        vx,
+        vy
+      };
     }
 
-    function drawConfetti() {
+    function createFallingConfetti() {
+      for (let i = 0; i < 3; i++) {
+        const x = Math.random() * canvas.width;
+        const y = -10;
+        const vx = Math.sin(y * 0.01) * 2;
+        const vy = Math.random() * 2 + 1;
+        particles.push(createConfettiParticle(x, y, vx, vy));
+      }
+    }
+
+    function popSideBlasters() {
+      const leftX = canvas.width * 0.1;
+      const rightX = canvas.width * 0.9;
+      const y = canvas.height * 0.5;
+
+      for (let i = 0; i < 50; i++) {
+        particles.push(createConfettiParticle(leftX, y, Math.random() * 5 + 2, Math.random() * -5 - 2));
+        particles.push(createConfettiParticle(rightX, y, Math.random() * -5 - 2, Math.random() * -5 - 2));
+      }
+    }
+
+    function drawParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      confetti.forEach((c) => {
+      particles.forEach(p => {
         ctx.beginPath();
-        ctx.fillStyle = c.color;
-        ctx.ellipse(c.x, c.y, c.r, c.r / 2, c.tilt, 0, 2 * Math.PI);
+        ctx.fillStyle = p.color;
+        ctx.ellipse(p.x, p.y, p.r, p.r / 2, p.tilt, 0, Math.PI * 2);
         ctx.fill();
       });
-      updateConfetti();
-      requestAnimationFrame(drawConfetti);
     }
 
-    function updateConfetti() {
-      confetti.forEach((c) => {
-        c.y += c.d * 4;
-        c.x += Math.sin(c.y * 0.01) * 2;
-        if (c.y > canvas.height) {
-          c.y = -10;
-          c.x = Math.random() * canvas.width;
-        }
+    function updateParticles() {
+      particles.forEach(p => {
+        p.vy += 0.1; // gravity
+        p.x += p.vx;
+        p.y += p.vy;
+        p.tilt += 0.01;
       });
+      particles = particles.filter(p => p.y < canvas.height + 50);
     }
 
-    drawConfetti();
+    function animate() {
+      drawParticles();
+      updateParticles();
+      requestAnimationFrame(animate);
+    }
 
-    window.addEventListener('resize', () => {
+    animate();
+    setInterval(createFallingConfetti, 100); // continuous gentle fall
+
+    window.addEventListener("resize", () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
